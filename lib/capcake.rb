@@ -425,7 +425,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     DESC
     desc "Prepares server for deployment of a CakePHP application"
     task :setup do
-      run "cd #{cake_path} && git clone --depth 1 #{cake_repo} cakephp"
+      run "cd #{cake_path} && git clone #{cake_repo} cakephp"
       set :git_flag_quiet, "-q "
       update
     end

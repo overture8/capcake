@@ -526,6 +526,11 @@ Capistrano::Configuration.instance(:must_exist).load do
       task :symlink, :roles => :web, :except => { :no_release => true } do
         run "#{try_sudo} ln -s #{database_path} #{current_path}/config/database.php"
       end
+
+      desc "Place the correct "
+      task :create_webroot_index, :roles => :web, :except => { :no_releases => true } do
+        run "#{try_sudo} sed 's\CAKECOREINCLUDEPATH\#{shared_path}/cakephp\g' #{current_path}/webroot/index.php.production > index.php"
+      end
     end
 
     namespace :logs do

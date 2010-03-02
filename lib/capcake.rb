@@ -529,7 +529,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       desc "Place the correct cake core path in the webroot - index.php file"
       task :create_webroot_index, :roles => :web, :except => { :no_releases => true } do
-        run "#{try_sudo} sed 's\CAKECOREINCLUDEPATH\#{shared_path}/cakephp\g' #{current_path}/webroot/index.php.production > index.php"
+        run "#{try_sudo} sed 's\CAKECOREINCLUDEPATH\#{shared_path}/cakephp\g' #{current_path}/webroot/index.php.production > #{current_path}/webroot/index.php"
       end
     end
 

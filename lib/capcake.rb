@@ -54,6 +54,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     after("deploy:setup", "cake:database:config") if (!remote_file_exists?(database_path))
     after("deploy:symlink", "cake:database:symlink") if (remote_file_exists?(database_path))
+    after("deploy", "cake:create_webroot_index")
   end
 
   def defaults(val, default)
@@ -429,6 +430,13 @@ Capistrano::Configuration.instance(:must_exist).load do
       set :git_flag_quiet, "-q "
       update
     end
+
+    desc "Place the correct cake core path in the webroot - index.php file"
+    task :create_webroot_index, :roles => :web, :except => { :no_releases => true } do
+      run "sed -e 's:CAKECOREINCLUDEPATH:#{shared_path}/cakephp:g' #{current_path}/webroot/index.php.production > #{current_path}/webroot/index.php"
+    end
+
+
     desc <<-DESC
       Force CakePHP installation to checkout a new branch/tag. \
 
@@ -527,10 +535,6 @@ Capistrano::Configuration.instance(:must_exist).load do
         run "#{try_sudo} ln -s #{database_path} #{current_path}/config/database.php"
       end
 
-      desc "Place the correct cake core path in the webroot - index.php file"
-      task :create_webroot_index, :roles => :web, :except => { :no_releases => true } do
-        run "#{try_sudo} sed 's\CAKECOREINCLUDEPATH\#{shared_path}/cakephp\g' #{current_path}/webroot/index.php.production > #{current_path}/webroot/index.php"
-      end
     end
 
     namespace :logs do
